@@ -1,0 +1,32 @@
+{
+  "name": "it-commuity",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build"
+  },
+  "dependencies": {
+    "axios": "^0.19.2",
+    "core-js": "^3.6.4",
+    "element-ui": "^2.4.5",
+    "mavon-editor": "^2.7.7",
+    "quill": "^1.3.7",
+    "quill-image-drop-module": "^1.0.3",
+    "quill-image-resize-module": "^3.0.0",
+    "vue": "^2.6.11",
+    "vue-quill-editor": "^3.0.6",
+    "vue-router": "^3.1.5",
+    "vuex": "^3.1.2",
+    "webpack": "latest"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^4.2.0",
+    "@vue/cli-service": "^4.2.0",
+    "babel-plugin-component": "^1.1.1",
+    "less": "^3.11.1",
+    "less-loader": "^5.0.0",
+    "vue-cli-plugin-element": "^1.0.1",
+    "vue-template-compiler": "^2.6.11"
+  }
+}

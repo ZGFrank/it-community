@@ -1,0 +1,26 @@
+[
+  {
+    "days": "<5",
+    "learnCoin": 5
+  },
+  {
+    "days": "≥5",
+    "learnCoin": 10
+  },
+  {
+    "days": "≥15",
+    "learnCoin": 15
+  },
+  {
+    "days": "≥30",
+    "learnCoin": 20
+  },
+  {
+    "days": "≥100",
+    "learnCoin": 30
+  },
+  {
+    "days": "≥365",
+    "learnCoin": 50
+  }
+]
