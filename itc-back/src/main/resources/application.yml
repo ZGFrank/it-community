@@ -1,0 +1,64 @@
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 123456
+    url: jdbc:mysql://192.168.56.110:3306/it-community?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=UTF-8
+    type: com.alibaba.druid.pool.DruidDataSource
+
+
+  http:
+    encoding:
+      enabled: true
+      charset: UTF-8
+      force: true
+
+  data:
+    elasticsearch:
+      cluster-name: it-community
+      cluster-nodes: 192.168.56.110:9300
+  redis:
+    host: 192.168.56.110
+    port: 6379
+    jedis:
+      pool:
+        max-active: 100
+        max-idle: 10
+        max-wait: 100000
+    timeout: 5000
+
+  servlet:
+    multipart:
+      enabled: true #是否启用http上传处理
+      max-request-size: 100MB #最大请求文件的大小
+      max-file-size: 20MB #设置单个文件最大长度
+      file-size-threshold: 20MB #当文件达到多少时进行磁盘写入
+
+mybatis-plus:
+  mapper-locations: classpath:/mybatis/mapper/*.xml
+  type-aliases-package: com.zgf.itc.entity
+
+server:
+  port: 8888
+  servlet:
+    context-path: /itc
+  tomcat:
+    uri-encoding: utf-8
+
+fdfs:
+  so-timeout: 2500       # 读取时间
+  connect-timeout: 600   # 连接超时时间
+  thumb-image:           # 缩略图
+    width: 100
+    height: 100
+  tracker-list:          # tracker服务配置地址列表
+    - 192.168.56.110:22122
+upload:
+  base-url: http://192.168.56.110/
+  allow-types:
+    - image/jpeg
+    - image/png
+    - image/bmp
+    - image/gif
+  default-avatar: group1/M00/00/00/wKg4ZV6VWT6AX7X-AAAEqvMUP8M639.png

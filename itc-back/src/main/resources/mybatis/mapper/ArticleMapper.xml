@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zgf.itc.mapper.ArticleMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zgf.itc.entity.Article">
+        <id column="art_id" property="artId"/>
+        <result column="u_id" property="uId"/>
+        <result column="title" property="title"/>
+        <result column="content" property="content"/>
+        <result column="create_time" property="createTime"/>
+        <result column="c_id" property="cId"/>
+        <result column="tag" property="tag"/>
+        <result column="att_id" property="attId"/>
+        <result column="learn_coin" property="learnCoin"/>
+        <result column="is_over" property="isOver"/>
+        <result column="status" property="status"/>
+        <result column="top" property="top"/>
+        <result column="hits_zan" property="hitsZan"/>
+        <result column="hits_comment" property="hitsComment"/>
+        <result column="watch" property="watch"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        art_id, u_id, title, content, create_time, c_id, tag, att_id, learn_coin, is_over, status, recommend, top, hits_zan, hits_comment, watch
+    </sql>
+    <select id="selectTopArticleItem" resultType="com.zgf.itc.vo.ArticleItem">
+        SELECT u.u_id,
+               u.avatar,
+               u.nickname,
+               u.vip,
+               a.art_id,
+               a.title,
+               a.create_time,
+               a.learn_coin,
+               a.is_over,
+               a.hits_comment,
+               a.status,
+               c.`name`
+        FROM ic_user u,
+             ic_category c,
+             ic_article a
+        WHERE u.u_id = a.u_id
+          AND a.c_id = c.c_id
+          AND a.top = 1
+          AND a.t_expiry_time >= NOW()
+    </select>
+    <select id="getArticlesMyUid" resultType="com.zgf.itc.entity.Article">
+        SELECT art_id, title, create_time, is_over, hits_zan, hits_comment, watch
+        FROM ic_article
+        WHERE u_id = #{uId}
+        ORDER BY create_time desc
+    </select>
+    <select id="getDetailById" resultType="com.zgf.itc.vo.ArticleDetail">
+        SELECT u.u_id,
+               u.avatar,
+               u.nickname,
+               u.vip,
+               c.`name`,
+               a.*
+        FROM ic_user u,
+             ic_category c,
+             ic_article a
+        WHERE u.u_id = a.u_id
+          AND a.c_id = c.c_id
+          AND a.art_id = #{artId}
+    </select>
+    <select id="getArticlesByDirId" resultType="com.zgf.itc.vo.FavoriteArticleItem">
+        SELECT f.f_id,
+               a.art_id,
+               a.title,
+               f.create_time,
+               c.name
+        FROM ic_article a,
+             ic_article_favorite f,
+             ic_category c
+        WHERE f.dir_id = #{dId}
+          AND f.art_id = a.art_id
+          AND a.c_id = c.c_id
+    </select>
+    <select id="getRecentArticle" resultType="com.zgf.itc.entity.Article">
+        SELECT art_id,
+               title,
+               create_time,
+               is_over,
+               status,
+               hits_zan,
+               hits_comment,
+               watch
+        FROM ic_article
+        WHERE u_id = #{uid}
+        limit #{limit}
+    </select>
+    <select id="queryNormal" resultType="com.zgf.itc.vo.ArticleItem">
+        SELECT u.u_id,
+        u.avatar,
+        u.nickname,
+        u.vip,
+        a.art_id,
+        a.title,
+        a.create_time,
+        a.learn_coin,
+        a.is_over,
+        a.hits_comment,
+        a.status,
+        c.`name`
+        FROM ic_user u,
+        ic_category c,
+        ic_article a
+        WHERE u.u_id = a.u_id
+        AND a.c_id = c.c_id
+        <if test="category != 0">
+            AND a.c_id = #{category}
+        </if>
+        <if test="type == 1">
+            AND a.is_over = 0
+        </if>
+        <if test="type == 2">
+            AND a.is_over = 1
+        </if>
+        <if test="type == 3">
+            AND a.status = 1
+        </if>
+        <if test="category == 0 and type == 0">
+            <if test="condition == 0">
+                ORDER BY a.hits_zan,a.create_time Desc
+            </if>
+            <if test="condition == 1">
+                ORDER BY a.hits_zan,a.hits_comment DESC
+            </if>
+        </if>
+        <if test="category != 0 or type != 0">
+            <if test="condition == 0">
+                ORDER BY a.create_time DESC
+            </if>
+            <if test="condition == 1">
+                ORDER BY a.hits_comment DESC
+            </if>
+        </if>
+    </select>
+    <select id="getWeekTopArticle" resultType="com.zgf.itc.entity.Article">
+        SELECT art_id, title, hits_comment
+        FROM ic_article
+        WHERE DATE_SUB(CURDATE(), INTERVAL 7 DAY) <![CDATA[<=]]> DATE(create_time)
+        ORDER BY hits_comment DESC
+        LIMIT 15
+    </select>
+    <select id="loadForBack" resultType="com.zgf.itc.entity.Article">
+        select
+        art_id, title, c_id, tag, learn_coin, is_over, hits_zan, hits_comment, watch
+        from ic_article
+        <where>
+            <if test="title!=null and title!=''">
+                and title like concat("%",#{title},"%")
+            </if>
+            <if test="category!=null">
+                and c_id = #{category}
+            </if>
+            <if test="isOver!=null">
+                and is_over = #{isOver}
+            </if>
+        </where>
+        <if test="sort==1">
+            order by hits_zan desc
+        </if>
+        <if test="sort==2">
+            order by hits_comment desc
+        </if>
+        <if test="sort==3">
+            order by watch desc
+        </if>
+    </select>
+    <select id="selectArticleItemByIds" resultType="com.zgf.itc.vo.ArticleItem">
+        SELECT u.u_id,
+        u.avatar,
+        u.nickname,
+        u.vip,
+        a.art_id,
+        a.title,
+        a.create_time,
+        a.learn_coin,
+        a.is_over,
+        a.hits_comment,
+        a.status,
+        c.`name`
+        FROM ic_user u,
+        ic_category c,
+        ic_article a
+        WHERE u.u_id = a.u_id
+        AND a.c_id = c.c_id
+        AND art_id in
+        <foreach collection="list" item="artId" index="index" open="(" separator="," close=")">
+            #{artId}
+        </foreach>
+    </select>
+    <select id="getArticleTagsByIds" resultType="java.lang.String">
+        select tag
+        from ic_article
+        where art_id in
+        <foreach collection="list" item="artId" index="index" open="(" separator="," close=")">
+            #{artId}
+        </foreach>
+    </select>
+    <select id="getArticleByCommentId" resultType="com.zgf.itc.entity.Article">
+        select a.art_id, a.title
+        from ic_article a,
+             ic_article_comment c
+        where a.art_id = c.art_id
+          and c.art_c_id = #{tid};
+    </select>
+    <select id="selectLimitAndNotIn" resultType="com.zgf.itc.vo.ArticleItem">
+        SELECT u.u_id,
+        u.avatar,
+        u.nickname,
+        u.vip,
+        a.art_id,
+        a.title,
+        a.create_time,
+        a.learn_coin,
+        a.is_over,
+        a.hits_comment,
+        a.status,
+        c.`name`
+        FROM ic_user u,
+        ic_category c,
+        ic_article a
+        WHERE u.u_id = a.u_id
+        AND a.c_id = c.c_id
+        AND art_id not in
+        <foreach collection="list" item="artId" index="index" open="(" separator="," close=")">
+            #{artId}
+        </foreach>
+        ORDER BY a.hits_comment desc,a.hits_zan desc,a.create_time desc
+        LIMIT #{limit}
+    </select>
+
+</mapper>

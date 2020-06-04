@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zgf.itc.mapper.CaseMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zgf.itc.entity.Case">
+        <id column="id" property="id"/>
+        <result column="u_id" property="uId"/>
+        <result column="title" property="title"/>
+        <result column="introduce" property="introduce"/>
+        <result column="case_img" property="caseImg"/>
+        <result column="url" property="url"/>
+        <result column="create_time" property="createTime"/>
+        <result column="zan" property="zan"/>
+        <result column="state" property="state"/>
+        <result column="sysu_id" property="sysuId"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, u_id, title, introduce, case_img, url, create_time, zan, state, sysu_id
+    </sql>
+    <select id="getAll" resultType="com.zgf.itc.vo.CaseVo">
+        SELECT c.*,u.nickname,u.avatar
+        FROM ic_case c,ic_user u
+        WHERE c.u_id = u.u_id
+        <if test="state != null">
+            AND c.state = #{state}
+        </if>
+        <if test="yearSpace != null">
+            AND year(c.create_time)=year(date_sub(now(),interval #{yearSpace} year))
+        </if>
+        <if test="uid != null">
+            AND c.u_id = #{uid}
+        </if>
+        <if test="orderByTime">
+            ORDER BY c.create_time DESC
+        </if>
+        <if test="!orderByTime">
+            ORDER BY c.zan DESC
+        </if>
+    </select>
+    <select id="getBack" resultType="com.zgf.itc.vo.CaseVo">
+        SELECT c.*, u.nickname, u.avatar
+        FROM ic_case c,
+             ic_user u
+        WHERE c.u_id = u.u_id
+          AND state = #{state}
+    </select>
+
+</mapper>

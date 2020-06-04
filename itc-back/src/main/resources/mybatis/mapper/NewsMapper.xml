@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zgf.itc.mapper.NewsMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zgf.itc.entity.News">
+        <id column="news_id" property="newsId" />
+        <result column="sysu_id" property="sysuId" />
+        <result column="title" property="title" />
+        <result column="content" property="content" />
+        <result column="create_time" property="createTime" />
+        <result column="expiry_time" property="expiryTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        news_id, sysu_id, title, content, create_time, expiry_time
+    </sql>
+    <select id="getBackAll" resultType="com.zgf.itc.vo.NewsVo">
+        SELECT
+            n.*, u.`name`
+        FROM
+            ic_news n,
+            ic_user u
+        WHERE
+            n.sysu_id = u.u_id
+        ORDER BY
+            create_time DESC
+    </select>
+
+</mapper>

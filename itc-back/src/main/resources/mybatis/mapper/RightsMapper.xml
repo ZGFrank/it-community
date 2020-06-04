@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zgf.itc.mapper.RightsMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zgf.itc.entity.Rights">
+        <id column="id" property="id"/>
+        <result column="auth_name" property="authName"/>
+        <result column="pid" property="pid"/>
+        <result column="path" property="path"/>
+        <result column="available" property="available"/>
+        <result column="level" property="level"/>
+        <result column="icon" property="icon"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, auth_name, pid, path, available, level, icon
+    </sql>
+    <select id="getRightsByRoleId" resultType="com.zgf.itc.entity.Rights">
+        select r.*
+        from ic_rights r,
+             ic_rights_role irr
+        where r.id = irr.right_id
+          and irr.role_id = #{id}
+          and r.available = 1
+    </select>
+    <select id="getCount" resultType="java.lang.Integer">
+        select count(r.id)
+        from ic_rights_role rr,
+             ic_rights r
+        where r.id = rr.right_id
+          and rr.role_id = #{roleId}
+          and r.path like concat("%", #{path}, "%")
+
+    </select>
+
+</mapper>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zgf.itc.mapper.ArticleWatchMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zgf.itc.entity.ArticleWatch">
+        <id column="art_w_id" property="artWId" />
+        <result column="art_id" property="artId" />
+        <result column="u_id" property="uId" />
+        <result column="create_time" property="createTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        art_w_id, art_id, u_id, create_time
+    </sql>
+
+</mapper>

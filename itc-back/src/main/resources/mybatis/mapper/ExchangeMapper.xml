@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zgf.itc.mapper.ExchangeMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zgf.itc.entity.Exchange">
+        <id column="id" property="id"/>
+        <result column="u_id" property="uId"/>
+        <result column="name" property="name"/>
+        <result column="title" property="title"/>
+        <result column="claim" property="claim"/>
+        <result column="qq" property="qq"/>
+        <result column="create_time" property="createTime"/>
+        <result column="state" property="state"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, u_id, name, title, claim, qq, create_time, state
+    </sql>
+    <select id="getAll" resultType="com.zgf.itc.entity.Exchange">
+        select id, u_id, name, title, claim, qq, create_time, state, expiry_time
+        from ic_exchange
+        <where>
+            <if test="uId != null">
+                AND u_id = #{uId}
+            </if>
+            <if test="state != null">
+                AND state = #{state}
+            </if>
+            <if test="state == 1">
+                AND expiry_time > now()
+            </if>
+        </where>
+    </select>
+
+</mapper>

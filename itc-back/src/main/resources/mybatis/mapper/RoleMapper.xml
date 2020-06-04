@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zgf.itc.mapper.RoleMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zgf.itc.entity.Role">
+        <id column="id" property="id" />
+        <result column="role_name" property="roleName" />
+        <result column="create_time" property="createTime" />
+        <result column="role_desc" property="roleDesc" />
+        <result column="available" property="available" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, role_name, create_time, role_desc, available
+    </sql>
+    <insert id="insertRoleRights">
+        insert into ic_rights_role values (#{roleId},#{rid})
+    </insert>
+    <delete id="deleteRightById">
+        delete from ic_rights_role where role_id = #{roleId} and right_id = #{rightId}
+    </delete>
+    <delete id="deleteRightsByRoleId">
+        delete from ic_rights_role where role_id = #{roleId}
+    </delete>
+
+</mapper>

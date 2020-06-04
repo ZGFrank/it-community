@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zgf.itc.mapper.ArticleCommentMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zgf.itc.entity.ArticleComment">
+        <id column="art_c_id" property="artCId"/>
+        <result column="p_id" property="pId"/>
+        <result column="art_id" property="artId"/>
+        <result column="content" property="content"/>
+        <result column="create_time" property="createTime"/>
+        <result column="u_id" property="uId"/>
+        <result column="is_take" property="isTake"/>
+        <result column="hits_zan" property="hitsZan"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        art_c_id, p_id, art_id, content, create_time, u_id, is_take, hits_zan
+    </sql>
+    <select id="getComments" resultType="com.zgf.itc.vo.ArticleCommentNode">
+        SELECT
+            u.u_id,
+            u.nickname,
+            u.avatar,
+            u.vip,
+            c.art_c_id,
+            c.p_id,
+            c.content,
+            c.create_time,
+            c.is_take,
+            c.hits_zan
+        FROM
+            ic_article_comment c,
+            ic_user u
+        WHERE
+            c.u_id = u.u_id
+            AND c.art_id = #{artId}
+            AND c.p_id = #{pId}
+    </select>
+    <select id="getComment" resultType="com.zgf.itc.vo.ArticleCommentNode">
+        SELECT
+            u.u_id,
+            u.nickname,
+            u.avatar,
+            u.vip,
+            c.art_c_id,
+            c.p_id,
+            c.content,
+            c.create_time,
+            c.is_take,
+            c.hits_zan
+        FROM
+            ic_article_comment c,
+            ic_user u
+        WHERE
+            c.u_id = u.u_id
+        AND c.art_c_id = #{artCId}
+    </select>
+    <select id="getRecentComment" resultType="com.zgf.itc.vo.RecentComment">
+        SELECT
+            z.art_c_id,
+            z.p_id,
+            z.art_id,
+            z.content,
+            z.create_time,
+            u.u_id,
+            u.nickname tonickname,
+            a.title
+        FROM
+            (
+                (
+                    ic_article_comment z
+                        LEFT JOIN ic_article_comment c ON z.p_id = c.art_c_id
+                    )
+                    LEFT JOIN ic_user u ON c.u_id = u.u_id
+                )
+                LEFT JOIN ic_article a ON z.art_id = a.art_id
+        WHERE
+            z.u_id = #{uid}
+        limit #{limit}
+    </select>
+
+</mapper>

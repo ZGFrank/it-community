@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zgf.itc.mapper.UserMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zgf.itc.entity.User">
+        <id column="u_id" property="uId"/>
+        <result column="name" property="name"/>
+        <result column="nickname" property="nickname"/>
+        <result column="account" property="account"/>
+        <result column="password" property="password"/>
+        <result column="phone" property="phone"/>
+        <result column="email" property="email"/>
+        <result column="class_grade" property="classGrade"/>
+        <result column="avatar" property="avatar"/>
+        <result column="gender" property="gender"/>
+        <result column="signature" property="signature"/>
+        <result column="learn_coin" property="learnCoin"/>
+        <result column="city" property="city"/>
+        <result column="create_time" property="createTime"/>
+        <result column="state" property="state"/>
+        <result column="vip" property="vip"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        u_id, name, nickname, account, password, phone, email, class_grade, avatar, gender, signature, learn_coin, city, create_time, state,vip
+    </sql>
+    <select id="getWeekTop" resultType="com.zgf.itc.vo.TopCommentUser">
+        SELECT u.u_id,
+               u.nickname,
+               u.avatar,
+               COUNT(c.art_c_id) reply_sum
+        FROM ic_user u,
+             ic_article_comment c
+        WHERE u.u_id = c.u_id
+          AND DATE_SUB(CURDATE(), INTERVAL 7 DAY) <![CDATA[<=]]> DATE(c.create_time)
+        GROUP BY u.u_id
+        ORDER BY COUNT(c.art_c_id) DESC
+        LIMIT 15
+    </select>
+    <select id="getAdmins" resultType="com.zgf.itc.vo.Admin">
+        select u.u_id, u.role_id, u.name, u.phone, u.email, r.role_name, r.available
+        from ic_user u,
+             ic_role r
+        where u.role_id = r.id
+    </select>
+    <select id="getAll" resultType="com.zgf.itc.entity.User">
+        select u_id, name, nickname, account, phone, email, class_grade, gender, role_id
+        from ic_user
+        <where>
+            <if test="name != null and name != ''">
+                and name like concat("%",#{name},"%")
+            </if>
+            <if test="nickname != null and nickname != ''">
+                and nickname like concat("%",#{nickname},"%")
+            </if>
+            <if test="classGrade != null and classGrade != ''">
+                and class_grade like concat("%",#{classGrade},"%")
+            </if>
+            <if test="gender != null">
+                and gender = #{gender}
+            </if>
+        </where>
+    </select>
+    <select id="getUserIdsByRightsId" resultType="java.lang.Integer">
+        select u.u_id
+        from ic_user u,
+             ic_rights_role irr
+        where u.role_id = irr.role_id
+          and irr.right_id = #{rightsId}
+    </select>
+
+</mapper>
